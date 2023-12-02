@@ -1,99 +1,90 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
-int romanoParaDecimal(char romano){
-    switch(romano){
-        case 'I': return 1;
-        case 'V': return 5;
-        case 'X': return 10;
-        case 'L': return 50;
-        case 'C': return 100;
-        case 'D': return 500;
-        case 'M': return 1000;
-        default: return 0;
+#define PLACA_SIZE 9
+#define DIA_SIZE 20
+
+void toLowerCase(char str[])
+{
+    for (int i = 0; str[i]; i++)
+    {
+        str[i] = tolower((unsigned char)str[i]);
     }
 }
 
-void decimalParaBinario(int decimalFuncao) {
-    if(decimalFuncao == 0){
-        printf("0");
-        return;
-    }
+int main()
+{
+    char placa[PLACA_SIZE], dia[DIA_SIZE];
+    char placaInvalida[] = "INVALIDO", diaInvalido[] = "INVALIDO";
 
-    int binario[32];
-    int j = 0;
+    strcpy(placa, placaInvalida);
+    strcpy(dia, diaInvalido);
 
-    while(decimalFuncao > 0){
-        binario[j] = decimalFuncao % 2;
-        decimalFuncao /= 2;
-        j++;
-    }
+    scanf("%s %s", placa, dia);
 
+    int tamanho = strlen(placa) == 7 ? 7 : 8;
 
-    for(j--; j >= 0; j--){
-        printf("%d", binario[j]);
-    }
-}
-
-void decimalParaHexadecimal(int decimalFuncao){
-    if(decimalFuncao == 0){
-        printf("0");
-        return;
-    }
-
-    char hexadecimal[20];
-    int x = 0, resto;
-
-    while(decimalFuncao > 0){
-        resto = decimalFuncao % 16;
-        if(resto < 10){
-            hexadecimal[x] = resto + '0';
-        }else{
-            hexadecimal[x] = resto - 10 + 'a';
-        }
-        decimalFuncao = decimalFuncao / 16;
-        x++;
-    }
-
-    for(x--; x >= 0; x--){
-        printf("%c", hexadecimal[x]);
-    }
-}
-
-int main(){
-    char romano[13];
-    int decimal = 0, tamanho, i, atual, proximo;
-    int decimalDoBinario, decimalDoHexadecimal;
-
-    scanf("%s", romano);
-
-    tamanho = strlen(romano);
-
-    for(i = 0; i < tamanho; i++){
-        atual = romanoParaDecimal(romano[i]);
-        if(i < tamanho - 1){
-            proximo = romanoParaDecimal(romano[i + 1]);
-        }else{
-            proximo = 0;
-        }
-
-        if(atual >= proximo){
-            decimal = decimal + atual;
-        }else{
-            decimal = decimal + (proximo - atual);
-            i++;
+    if (tamanho == 7)
+    {
+        if (!(isalpha(placa[0]) && isalpha(placa[1]) && isalpha(placa[2]) && isalpha(placa[4])) || !(isdigit(placa[3]) && isdigit(placa[5]) && isdigit(placa[6])))
+        {
+            strcpy(placa, placaInvalida);
         }
     }
-    decimalDoBinario = decimal;
-    decimalDoHexadecimal = decimal;
+    else
+    {
+        if (!(isalpha(placa[0]) && isalpha(placa[1]) && isalpha(placa[2])) || !(isdigit(placa[4]) && isdigit(placa[5]) && isdigit(placa[6]) && isdigit(placa[7])) || placa[3] != '-')
+        {
+            strcpy(placa, placaInvalida);
+        }
+    }
 
-    printf("%s na base 2: ", romano);
-    decimalParaBinario(decimalDoBinario);
-    printf("\n");
-    printf("%s na base 10: %d\n", romano, decimal);
-    printf("%s na base 16: ", romano);
-    decimalParaHexadecimal(decimalDoHexadecimal);
-    printf("\n");
+    toLowerCase(dia);
+
+    if (strcmp(dia, "segunda-feira") == 0 || strcmp(dia, "terca-feira") == 0 ||
+        strcmp(dia, "quarta-feira") == 0 || strcmp(dia, "quinta-feira") == 0 ||
+        strcmp(dia, "sexta-feira") == 0 || strcmp(dia, "sabado") == 0 || strcmp(dia, "domingo") == 0)
+    {
+        // Valid day
+    }
+    else
+    {
+        strcpy(dia, diaInvalido);
+    }
+
+    if (strcmp(placa, placaInvalida) != 0 && strcmp(dia, diaInvalido) != 0)
+    {
+        if (strcmp(dia, "sabado") == 0 || strcmp(dia, "domingo") == 0)
+        {
+            printf("Nao ha proibicao no fim de semana\n");
+        }
+        else
+        {
+            int lastDigit = tamanho == 7 ? placa[6] - '0' : placa[7] - '0';
+            int restrictedDay = lastDigit / 2;
+
+            if (restrictedDay == 0)
+            {
+                printf("%s nao pode circular %s\n", placa, dia);
+            }
+            else
+            {
+                printf("%s pode circular %s\n", placa, dia);
+            }
+        }
+    }
+    else
+    {
+        if (strcmp(placa, placaInvalida) == 0)
+        {
+            printf("Placa invalida\n");
+        }
+        if (strcmp(dia, diaInvalido) == 0)
+        {
+            printf("Dia da semana invalido\n");
+        }
+    }
 
     return 0;
 }

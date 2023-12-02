@@ -16,7 +16,5 @@ int main()
         V = V + A;
         V = V * (1 + i);
         printf("Montante ao fim do mes %d: R$ %.2lf\n", cont, V);
-    }
-
-       return 0;
+    }return 0;
 }
