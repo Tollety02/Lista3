@@ -70,7 +70,7 @@ int main()
             }
             else
             {
-                printf("%s pode circular %s\n", placa, dia);
+                printf("pode circular %s\n", placa, dia);
             }
         }
     }
@@ -82,7 +82,7 @@ int main()
         }
         if (strcmp(dia, diaInvalido) == 0)
         {
-            printf("Dia da semana invalido\n");
+            printf("%s Dia da semana invalido\n");
         }
     }
 
